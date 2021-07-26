@@ -1,8 +1,11 @@
 package br.com.talentstechbank.padaria.controllers;
 
 import br.com.talentstechbank.padaria.models.Produto;
-import br.com.talentstechbank.padaria.repositories.ProdutoRepository;
+import br.com.talentstechbank.padaria.services.ProdutoService;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,27 +21,34 @@ import java.util.List;
 public class ProdutoController {
 
     @Autowired
-    private ProdutoRepository produtoRepository;
+    private ProdutoService service;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Produto> listarProdutoPorId(@PathVariable Long id) {
+        Produto obj = service.listarProdutoPorId(id);
+        return ResponseEntity.ok().body(obj);
+    }
 
     @GetMapping
-    public List<Produto> listarTodosOsProdutos() {
-        return produtoRepository.findAll();
+    public ResponseEntity<List<Produto>> listarTodosOsProdutos() {
+        List<Produto> list = service.listarTodosProdutos();
+        return ResponseEntity.ok().body(list);
     }
 
 
     @PostMapping
-    public Produto criarProduto(@RequestBody Produto produto) {
-        return produtoRepository.save(produto);
+    public Produto cadastrarProduto(@RequestBody Produto produto) {
+        return service.cadastrarProduto(produto);
     }
 
     @PutMapping("/{id}")
-    public Produto updateProduto(@RequestBody Produto produto, @PathVariable Long id) {
-        Produto produtoJaExistente = produtoRepository.getById(id);
-
-        produtoJaExistente.setDescricao(produto.getDescricao());
-
-        return produtoRepository.save(produtoJaExistente);
+    public Produto alterarProduto(@RequestBody Produto produto, @PathVariable Long id) {
+        return service.alterarProduto(produto, id);
+    }
+    
+    @DeleteMapping("/{id}")
+    public void deleteProduto(@PathVariable Long id) {
+    	service.deletarProduto(id);
     }
 
 }

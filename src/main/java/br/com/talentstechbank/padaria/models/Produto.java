@@ -5,16 +5,20 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity(name = "tb_produto")
-public class Produto {
+public class Produto implements Serializable {
 
-    @Id
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String descricao;
 
     @Column(name = "valor_custo")
@@ -26,18 +30,17 @@ public class Produto {
     @Column(name = "unidade_medida_peso")
     private String unidadeMedidaPeso;
 
-    @Column(name = "codigo_barras")
+    @Column(name = "codigo_barras", unique = true)
     private String codigoDeBarras;
 
     @Column(name = "valor_venda")
-    private BigDecimal valorVenda;
+    private BigDecimal valorVenda;  
 
-    public Long getId() {
+    public Produto() {
+	}
+
+	public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getDescricao() {
