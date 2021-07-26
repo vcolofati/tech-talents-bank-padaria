@@ -30,11 +30,14 @@ public class Produto implements Serializable {
     @Column(name = "unidade_medida_peso")
     private String unidadeMedidaPeso;
 
-    @Column(name = "codigo_barras", unique = true)
+    @Column(name = "codigo_barras", unique = true, nullable = false)
     private String codigoDeBarras;
 
     @Column(name = "valor_venda")
-    private BigDecimal valorVenda;  
+    private BigDecimal valorVenda;
+    
+    @Column(name = "status")
+    private Boolean ativo = true;
 
     public Produto() {
 	}
@@ -42,7 +45,7 @@ public class Produto implements Serializable {
 	public Long getId() {
         return id;
     }
-
+	
     public String getDescricao() {
         return descricao;
     }
@@ -80,7 +83,9 @@ public class Produto implements Serializable {
     }
 
     public void setCodigoDeBarras(String codigoDeBarras) {
-        this.codigoDeBarras = codigoDeBarras;
+    	if (!codigoDeBarras.equals("")) {    		
+    		this.codigoDeBarras = codigoDeBarras;
+    	}
     }
 
     public BigDecimal getValorVenda() {
@@ -90,4 +95,16 @@ public class Produto implements Serializable {
     public void setValorVenda(BigDecimal valorVenda) {
         this.valorVenda = valorVenda;
     }
+
+	public Boolean getAtivo() {
+		return ativo;
+	}
+
+	public void inativaProduto() {
+		this.ativo = false;
+	}
+	
+	public void ativaProduto() {
+		this.ativo = true;
+	}
 }

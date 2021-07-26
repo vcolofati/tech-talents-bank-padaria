@@ -14,13 +14,13 @@ public class ProdutoService {
 	@Autowired
 	private ProdutoRepository repository;
 	
-	public List<Produto> listarTodosProdutos() {
-		return repository.findAll();
+	public List<Produto> listarProdutos() {
+		return repository.listarProdutos();
 	}
 	
 	public Produto listarProdutoPorId(Long id) {
 		//TODO tratar erro listar produto que não existe
-		return repository.findById(id).get();
+		return repository.listarProduto(id);
 	}
 	
 	public Produto cadastrarProduto(Produto obj) {
@@ -29,16 +29,33 @@ public class ProdutoService {
 		return repository.save(obj);
 	}
 	
-	public void deletarProduto(Long id) {
-		//TODO tratar erro deletar produto que não existe
-		repository.deleteById(id);
-	}
-	
 	public Produto alterarProduto(Produto obj, Long id) {
 		//TODO tratar erro alterar produto que não existe
 		Produto entidade = repository.findById(id).get();
 		atualizaValores(entidade, obj);
 		return repository.save(entidade);
+	}
+	
+	public void inativarProduto(Long id) {
+		//TODO tratar erro deletar produto que não existe
+		Produto entidade = repository.findById(id).get();
+		entidade.inativaProduto();
+		repository.save(entidade);
+	}
+	
+	public void ativarProduto(Long id) {
+		//TODO tratar erro deletar produto que não existe
+		Produto entidade = repository.findById(id).get();
+		entidade.ativaProduto();
+		repository.save(entidade);
+	}
+	
+	public List<Produto> listarProdutosPorDescricao(String descricao) {
+		return repository.listarProdutosPorDescricao(descricao);
+	}
+	
+	public Produto listarProdutoPorCodBarra(String codigo) {
+		return repository.listarProdutoPorCodBarra(codigo);
 	}
 	
 	private void atualizaValores(Produto entidade, Produto obj) {
