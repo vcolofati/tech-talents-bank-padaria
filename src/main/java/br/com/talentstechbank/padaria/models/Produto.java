@@ -5,16 +5,20 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity(name = "tb_produto")
-public class Produto {
+public class Produto implements Serializable {
 
-    @Id
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String descricao;
 
     @Column(name = "valor_custo")
@@ -26,20 +30,22 @@ public class Produto {
     @Column(name = "unidade_medida_peso")
     private String unidadeMedidaPeso;
 
-    @Column(name = "codigo_barras")
+    @Column(name = "codigo_barras", unique = true, nullable = false)
     private String codigoDeBarras;
 
     @Column(name = "valor_venda")
     private BigDecimal valorVenda;
+    
+    @Column(name = "status")
+    private Boolean ativo = true;
 
-    public Long getId() {
+    public Produto() {
+	}
+
+	public Long getId() {
         return id;
     }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+	
     public String getDescricao() {
         return descricao;
     }
@@ -77,7 +83,9 @@ public class Produto {
     }
 
     public void setCodigoDeBarras(String codigoDeBarras) {
-        this.codigoDeBarras = codigoDeBarras;
+    	if (!codigoDeBarras.equals("")) {    		
+    		this.codigoDeBarras = codigoDeBarras;
+    	}
     }
 
     public BigDecimal getValorVenda() {
@@ -87,4 +95,16 @@ public class Produto {
     public void setValorVenda(BigDecimal valorVenda) {
         this.valorVenda = valorVenda;
     }
+
+	public Boolean getAtivo() {
+		return ativo;
+	}
+
+	public void inativaProduto() {
+		this.ativo = false;
+	}
+	
+	public void ativaProduto() {
+		this.ativo = true;
+	}
 }
