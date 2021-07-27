@@ -1,13 +1,19 @@
 package br.com.talentstechbank.padaria.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import com.sun.istack.NotNull;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity(name = "tb_produto")
 public class Produto implements Serializable {
@@ -17,8 +23,9 @@ public class Produto implements Serializable {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
+	
+	@NotNull
+    @Column()
     private String descricao;
 
     @Column(name = "valor_custo")
@@ -29,8 +36,9 @@ public class Produto implements Serializable {
 
     @Column(name = "unidade_medida_peso")
     private String unidadeMedidaPeso;
-
-    @Column(name = "codigo_barras", unique = true, nullable = false)
+    
+    @NotNull
+    @Column(name = "codigo_barras", unique = true)
     private String codigoDeBarras;
 
     @Column(name = "valor_venda")
@@ -38,9 +46,24 @@ public class Produto implements Serializable {
     
     @Column(name = "status")
     private Boolean ativo = true;
+    
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL)
+    private Set<ItemVenda> itemVendas = new HashSet<>();
 
     public Produto(String descricao, BigDecimal valor_custo, BigDecimal peso_unitario, String unidade_medida_peso, String codigo_barras, BigDecimal valor_venda) {
 	}
+    
+   	public Produto(String descricao, BigDecimal valorDeCusto, BigDecimal pesoUnitario, String unidadeMedidaPeso,
+			String codigoDeBarras, BigDecimal valorVenda) {
+		this.descricao = descricao;
+		this.valorDeCusto = valorDeCusto;
+		this.pesoUnitario = pesoUnitario;
+		this.unidadeMedidaPeso = unidadeMedidaPeso;
+		this.codigoDeBarras = codigoDeBarras;
+		this.valorVenda = valorVenda;
+	}
+
+
 
 	public Long getId() {
         return id;
@@ -106,5 +129,37 @@ public class Produto implements Serializable {
 	
 	public void ativaProduto() {
 		this.ativo = true;
+	}
+
+	@Override
+	public String toString() {
+		return "Produto [id=" + id + ", descricao=" + descricao + ", valorDeCusto=" + valorDeCusto + ", pesoUnitario="
+				+ pesoUnitario + ", unidadeMedidaPeso=" + unidadeMedidaPeso + ", codigoDeBarras=" + codigoDeBarras
+				+ ", valorVenda=" + valorVenda + ", ativo=" + ativo + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Produto other = (Produto) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 }
