@@ -39,7 +39,7 @@ public class Produto implements Serializable {
     @Column(name = "status")
     private Boolean ativo = true;
 
-    public Produto() {
+    public Produto(String descricao, BigDecimal valor_custo, BigDecimal peso_unitario, String unidade_medida_peso, String codigo_barras, BigDecimal valor_venda) {
 	}
 
 	public Long getId() {
