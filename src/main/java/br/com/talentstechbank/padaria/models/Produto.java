@@ -34,7 +34,7 @@ public class Produto implements Serializable {
     @Column(name = "peso_unitario")
     private BigDecimal pesoUnitario;
 
-    @Column(name = "unidade_medida_peso")
+    @Column(name = "unidade_medida_vendida")
     private String unidadeMedidaPeso;
     
     @NotNull
@@ -50,7 +50,7 @@ public class Produto implements Serializable {
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL)
     private Set<ItemVenda> itemVendas = new HashSet<>();
 
-    public Produto(String descricao, BigDecimal valor_custo, BigDecimal peso_unitario, String unidade_medida_peso, String codigo_barras, BigDecimal valor_venda) {
+    public Produto() {
 	}
     
    	public Produto(String descricao, BigDecimal valorDeCusto, BigDecimal pesoUnitario, String unidadeMedidaPeso,
