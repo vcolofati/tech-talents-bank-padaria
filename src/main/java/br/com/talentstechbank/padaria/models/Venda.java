@@ -40,13 +40,10 @@ public class Venda implements Serializable {
 		dataHora = LocalDateTime.now();
 	}
 	
-	
 	public Venda(BigDecimal valor) {
 		this.valor = valor;
 		dataHora = LocalDateTime.now();
 	}
-
-
 
 	public Long getId() {
 		return id;
@@ -66,6 +63,10 @@ public class Venda implements Serializable {
 
 	public void setDataHora(LocalDateTime dataHora) {
 		this.dataHora = dataHora;
+	}
+	
+	public void adicionarItemVenda(ItemVenda itemVenda) {
+		itemVendas.add(itemVenda);
 	}
 
 	@Override

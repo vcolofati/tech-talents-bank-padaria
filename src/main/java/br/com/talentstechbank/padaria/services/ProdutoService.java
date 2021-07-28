@@ -65,5 +65,4 @@ public class ProdutoService {
 		entidade.setUnidadeMedidaPeso(obj.getUnidadeMedidaPeso());
 		entidade.setValorVenda(obj.getValorVenda());
 	}
-	
 }

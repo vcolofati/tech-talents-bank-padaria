@@ -1,5 +1,6 @@
 package br.com.talentstechbank.padaria.services;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,10 @@ public class VendaService {
 	}
 
 	public List<Venda> listarVendas() {
-		return repository.findAll();
-		
+		return repository.findAll();	
+	}
+	
+	public List<Venda> listarVendasPeriodo(LocalDate inicio, LocalDate fim) {
+		return repository.listarVendasPeriodo(inicio, fim);
 	}
 }
