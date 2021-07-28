@@ -15,6 +15,9 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 	@Query(value = "SELECT * FROM tb_produto WHERE status = true", nativeQuery = true)
 	List<Produto> listarProdutos();
 	
+	@Query(value = "SELECT * FROM tb_produto WHERE status = false", nativeQuery = true)
+	List<Produto> listarProdutosInativos();
+	
 	@Query(value = "SELECT * FROM tb_produto WHERE id = ?1 AND status = true", nativeQuery = true)
 	Produto listarProduto(Long id);
 	

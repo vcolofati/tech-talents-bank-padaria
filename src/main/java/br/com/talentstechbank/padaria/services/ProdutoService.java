@@ -18,6 +18,10 @@ public class ProdutoService {
 		return repository.listarProdutos();
 	}
 	
+	public List<Produto> listarProdutosInativos() {
+		return repository.listarProdutosInativos();
+	}
+	
 	public Produto listarProdutoPorId(Long id) {
 		//TODO tratar erro listar produto que não existe
 		return repository.listarProduto(id);

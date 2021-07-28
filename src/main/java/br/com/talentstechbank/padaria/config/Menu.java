@@ -1,10 +1,12 @@
 package br.com.talentstechbank.padaria.config;
 
 import br.com.talentstechbank.padaria.models.ItemVenda;
+import br.com.talentstechbank.padaria.models.MovimentacaoDeProduto;
 import br.com.talentstechbank.padaria.models.Produto;
 import br.com.talentstechbank.padaria.models.Venda;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 
 import br.com.talentstechbank.padaria.services.ItemVendaService;
+import br.com.talentstechbank.padaria.services.MovimentacaoDeProdutoService;
 import br.com.talentstechbank.padaria.services.ProdutoService;
 import br.com.talentstechbank.padaria.services.VendaService;
 
@@ -25,6 +28,9 @@ public class Menu implements CommandLineRunner {
 	
 	@Autowired
 	ItemVendaService itemVendaService;
+	
+	@Autowired
+	MovimentacaoDeProdutoService movimentacaoDeProdutoService;
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -130,6 +136,36 @@ public class Menu implements CommandLineRunner {
 
 						switch (opcEmGerenciamentoDeProducaoPropria) {
 							case 1:                 /*Inserir receita avulsa em estoque*/
+								System.out.print("Insira a descrição do novo produto:");
+								String descricao = in.next();
+
+								System.out.println("Insira o peso unitario do novo produto:");
+								BigDecimal peso_unitario = BigDecimal.valueOf(in.nextDouble());
+
+								System.out.println("Insira a unidade medida peso do novo produto:");
+								String unidade_medida_peso = in.next();
+
+								System.out.println("Insira o codigo de barras do novo produto:");
+								String codigo_barras = in.next();
+
+								System.out.print("Insira o valor de custo do novo produto:");
+								BigDecimal valor_custo = BigDecimal.valueOf(in.nextDouble());
+
+								System.out.println("Insira o valor de venda do novo produto:");
+								BigDecimal valor_venda = BigDecimal.valueOf(in.nextDouble());
+
+								// Cadastrei um novo produto
+								Produto produto = new Produto(descricao,
+										valor_custo,
+										peso_unitario,
+										unidade_medida_peso,
+										codigo_barras,
+										valor_venda
+								);
+
+								produto = produtoService.cadastrarProduto(produto);
+								
+							//movimentacaoDeProdutoService.fabricar(produto, quantidade, valor_custo, valor_venda, null, null, codigo_barras);
 								/* 4.1 */
 								break;
 
@@ -170,10 +206,18 @@ public class Menu implements CommandLineRunner {
 							System.out.println();
 							System.out.print("Opção: ");
 							int opcEmGerenciamentoDeEstoque = in.nextInt();
-
+							Produto produto;
 							switch (opcEmGerenciamentoDeEstoque) {
 
 								case 1: /*Inserir produtos em estoque */
+									produto = produtoService.listarProdutoPorCodBarra("98798794566565"); 
+									MovimentacaoDeProduto movimentacaoDeProduto = new MovimentacaoDeProduto(produto, BigDecimal.valueOf(5), 
+												LocalDateTime.now(), produto.getValorDeCusto(), produto.getValorVenda(), "Compra", 
+												LocalDateTime.parse("2020-07-25 14:55:58"), LocalDateTime.parse("2020-07-26 14:55:58"), "Ambev", "mlfdmk55");
+									movimentacaoDeProdutoService.compra(movimentacaoDeProduto);
+									
+									
+									System.out.println(movimentacaoDeProdutoService.listarCompras());
 									break;
 								case 2: /*Cadastrar produto inédito em estoque */
 
@@ -196,7 +240,7 @@ public class Menu implements CommandLineRunner {
 									BigDecimal valor_venda = BigDecimal.valueOf(in.nextDouble());
 
 									// Cadastrei um novo produto
-									Produto produto = new Produto(descricao,
+									produto = new Produto(descricao,
 											valor_custo,
 											peso_unitario,
 											unidade_medida_peso,

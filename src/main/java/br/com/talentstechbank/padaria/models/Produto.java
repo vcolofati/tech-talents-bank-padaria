@@ -35,7 +35,7 @@ public class Produto implements Serializable {
     private BigDecimal pesoUnitario;
 
     @Column(name = "unidade_medida_vendida")
-    private String unidadeMedidaPeso;
+    private String unidadeMedidaVendida;
     
     @NotNull
     @Column(name = "codigo_barras", unique = true)
@@ -46,6 +46,9 @@ public class Produto implements Serializable {
     
     @Column(name = "status")
     private Boolean ativo = true;
+    
+    @OneToMany(mappedBy = "produto")
+    private Set<MovimentacaoDeProduto> movimentacoes = new HashSet<>();
     
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL)
     private Set<ItemVenda> itemVendas = new HashSet<>();
@@ -58,12 +61,10 @@ public class Produto implements Serializable {
 		this.descricao = descricao;
 		this.valorDeCusto = valorDeCusto;
 		this.pesoUnitario = pesoUnitario;
-		this.unidadeMedidaPeso = unidadeMedidaPeso;
+		this.unidadeMedidaVendida = unidadeMedidaPeso;
 		this.codigoDeBarras = codigoDeBarras;
 		this.valorVenda = valorVenda;
 	}
-
-
 
 	public Long getId() {
         return id;
@@ -94,11 +95,11 @@ public class Produto implements Serializable {
     }
 
     public String getUnidadeMedidaPeso() {
-        return unidadeMedidaPeso;
+        return unidadeMedidaVendida;
     }
 
     public void setUnidadeMedidaPeso(String unidadeMedidaPeso) {
-        this.unidadeMedidaPeso = unidadeMedidaPeso;
+        this.unidadeMedidaVendida = unidadeMedidaPeso;
     }
 
     public String getCodigoDeBarras() {
@@ -134,7 +135,7 @@ public class Produto implements Serializable {
 	@Override
 	public String toString() {
 		return "Produto [id=" + id + ", descricao=" + descricao + ", valorDeCusto=" + valorDeCusto + ", pesoUnitario="
-				+ pesoUnitario + ", unidadeMedidaPeso=" + unidadeMedidaPeso + ", codigoDeBarras=" + codigoDeBarras
+				+ pesoUnitario + ", unidadeMedidaPeso=" + unidadeMedidaVendida + ", codigoDeBarras=" + codigoDeBarras
 				+ ", valorVenda=" + valorVenda + ", ativo=" + ativo + "]";
 	}
 
