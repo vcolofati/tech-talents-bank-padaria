@@ -1,21 +1,30 @@
 package br.com.talentstechbank.padaria.config;
 
+import br.com.talentstechbank.padaria.models.ItemVenda;
 import br.com.talentstechbank.padaria.models.Produto;
+import br.com.talentstechbank.padaria.models.Venda;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 
+import br.com.talentstechbank.padaria.services.ItemVendaService;
 import br.com.talentstechbank.padaria.services.ProdutoService;
+import br.com.talentstechbank.padaria.services.VendaService;
 
 @Configuration
 public class Menu implements CommandLineRunner {
 	@Autowired
 	ProdutoService produtoService;
+	
+	@Autowired
+	VendaService vendaService;
+	
+	@Autowired
+	ItemVendaService itemVendaService;
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -60,7 +69,7 @@ public class Menu implements CommandLineRunner {
 
 					case 1: /*Realizar venda*/
 						// Inicializei uma nova venda
-//                        Venda v = Venda.inicializarVenda(VendaDao);
+                        Venda v = vendaService.inicializarVenda();
 
                         int finalizar_compra = 0;
 
@@ -72,15 +81,15 @@ public class Menu implements CommandLineRunner {
                             int quantidade_de_produto = Integer.parseInt(in.next());
 
                             // Busquei um produto por código de barras
-//                            List<Produto> resultadoBuscaProdutos = Produto.buscarProdutos(ProdutoDao, codigo_barras);
-//                            Produto produtoEncontrado = resultadoBuscaProdutos.get(0);
+                            Produto produto = produtoService.listarProdutoPorCodBarra(codigo_barras);
 
                             // Criei um novo item venda
-//                            ItemVenda item = new ItemVenda();
-//                            item.setProduto(produtoEncontrado);
-//                            item.setQuantidade(BigDecimal.valueOf(quantidade_de_produto));
+                            ItemVenda item = new ItemVenda();
+                            item.setProduto(produto);
+                            item.setQuantidade(BigDecimal.valueOf(quantidade_de_produto));
 
-//                            v.adicionarItemNaVenda(ItemVendaDao, item);
+                            v.adicionarItemVenda(item);
+                            
 
                             System.out.println("Finalizar  compra? S/N ");
                             char escolha = in.next().charAt(0);
@@ -165,13 +174,7 @@ public class Menu implements CommandLineRunner {
 							switch (opcEmGerenciamentoDeEstoque) {
 
 								case 1: /*Inserir produtos em estoque */
-
-
-
-
 									break;
-
-
 								case 2: /*Cadastrar produto inédito em estoque */
 
 									System.out.print("Insira a descrição do novo produto:");
@@ -192,7 +195,6 @@ public class Menu implements CommandLineRunner {
 									System.out.println("Insira o valor de venda do novo produto:");
 									BigDecimal valor_venda = BigDecimal.valueOf(in.nextDouble());
 
-
 									// Cadastrei um novo produto
 									Produto produto = new Produto(descricao,
 											valor_custo,
@@ -206,7 +208,6 @@ public class Menu implements CommandLineRunner {
 
 //									p.cadastrarNovoProduto(ProdutoDao);
 									break;
-
 								case 3: /*Cadastrar produto inédito em estoque*/
 									break;
 
@@ -225,23 +226,16 @@ public class Menu implements CommandLineRunner {
 
 								case 0:
 									break;
-
 								default:
 									System.out.println("Por favor, digite uma opção válida!\n");
 									break;
-
 							}
 
 						} else {
-
 							System.out.println("Senha administrativa incorreta");
-
 						}
 						break;
-
-
 					case 9:
-
 						System.out.print("Por favor, digite a senha administrativa: ");
 						senha = in.next();
 
@@ -274,30 +268,23 @@ public class Menu implements CommandLineRunner {
 								default:
 									System.out.println("Por favor, digite uma opção válida!\n");
 									break;
-
-
 							}
-
 
 						} else {
 
 							System.out.println("Senha administrativa incorreta");
-
 						}
 						break;
 
 					case 0:
 						loop = false;
 						break;
-
 					default:
 						System.out.println("Por favor, digite uma opção válida!\n");
 						break;
 				}
-
-
 			}
-
+			in.close();
 		}
 	}
 
