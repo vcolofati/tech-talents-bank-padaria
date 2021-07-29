@@ -142,7 +142,7 @@ public class Menu implements CommandLineRunner {
                             String quantidade = in.next();
 
                             System.out.println("Insira o codigo de barras do novo produto:");
-                            String codigo_barras = in.next();
+                             codigo_barras = in.next();
 
                             System.out.print("Insira o valor de custo do novo produto:");
                             BigDecimal valor_custo = BigDecimal.valueOf(in.nextDouble());
