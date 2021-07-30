@@ -9,7 +9,7 @@ import br.com.talentstechbank.padaria.models.Produto;
 
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 	
-	@Query(value = "SELECT * FROM tb_produto WHERE ativo = true", nativeQuery = true)
+	@Query(value = "SELECT * FROM tb_produto WHERE status = true", nativeQuery = true)
 	List<Produto> listarProdutos();
 
 	@Query(value = "SELECT * FROM tb_produto WHERE status = false", nativeQuery = true)

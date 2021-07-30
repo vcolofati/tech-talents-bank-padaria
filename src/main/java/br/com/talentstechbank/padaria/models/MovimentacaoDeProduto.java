@@ -2,6 +2,7 @@ package br.com.talentstechbank.padaria.models;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -39,10 +40,10 @@ public class MovimentacaoDeProduto implements Serializable {
     String especieDaMovimentacao;
 
     @Column
-    private LocalDateTime validade;
+    private LocalDate validade;
 
     @Column
-    private LocalDateTime fabricacao;
+    private LocalDate fabricacao;
 
     @Column
     private String fornecedor;
@@ -54,8 +55,8 @@ public class MovimentacaoDeProduto implements Serializable {
 	}
 
 	public MovimentacaoDeProduto(Produto produto, BigDecimal quantidade, LocalDateTime dataMovimentacao,
-								 String especieDaMovimentacao, LocalDateTime validade,
-								 LocalDateTime fabricacao, String fornecedor, String lote) {
+								 String especieDaMovimentacao, LocalDate validade,
+								 LocalDate fabricacao, String fornecedor, String lote) {
 		this.produto = produto;
 		this.quantidade = quantidade;
 		this.dataMovimentacao = dataMovimentacao;
@@ -106,19 +107,19 @@ public class MovimentacaoDeProduto implements Serializable {
 		this.especieDaMovimentacao = especieDaMovimentacao;
 	}
 
-	public LocalDateTime getValidade() {
+	public LocalDate getValidade() {
 		return validade;
 	}
 
-	public void setValidade(LocalDateTime validade) {
+	public void setValidade(LocalDate validade) {
 		this.validade = validade;
 	}
 
-	public LocalDateTime getFabricacao() {
+	public LocalDate getFabricacao() {
 		return fabricacao;
 	}
 
-	public void setFabricacao(LocalDateTime fabricacao) {
+	public void setFabricacao(LocalDate fabricacao) {
 		this.fabricacao = fabricacao;
 	}
 

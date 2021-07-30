@@ -17,7 +17,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -66,9 +69,9 @@ public class TalentsTechBankApplication implements CommandLineRunner {
         while (loop) {
 
             System.out.println("\n***Caixa Padaria Pão & cia ***");
-            System.out.println("1- Realizar venda"); // todo saida
-            System.out.println("2- Conferir preço de produto"); // falta método que volta id_produto ao receber descrição ou código todo id
-            System.out.println("3- Conferir quantidade de determinado produto em estoque");// falta método de busca pordescrição ou código + metodo que some linhas de entrada e some linhas desaida e as subtraia todo id
+            System.out.println("1- Realizar venda");
+            System.out.println("2- Conferir preço de produto");
+            System.out.println("3- Conferir quantidade de determinado produto em estoque");
             System.out.println("4- Inserir produção"); // todo saida
             System.out.println("8 - Acessar menu de Gerenciamento de Estoque"); // *
             System.out.println("9 - Acessar menu de Controle de caixa"); // *
@@ -124,6 +127,7 @@ public class TalentsTechBankApplication implements CommandLineRunner {
                 /* 4.1 */
                 break;
             case 2: /* Inserir fornada de pão em estoque */
+                //inserirFornadaPaoFrances();
                 /* 4.2 */
                 break;
             case 3:/*Inserir bolo em estoque*/
@@ -166,6 +170,7 @@ public class TalentsTechBankApplication implements CommandLineRunner {
                     cadastrarProdutoIneditoEstoque();
                     break;
                 case 3: /* Relação de todos os produtos ativos em estoque */
+                    filtrarProdutosAtivos();
                     break;
                 case 4: /* Relação de todos os produtos ativos e inativos em estoque */
                     break;
@@ -223,6 +228,15 @@ public class TalentsTechBankApplication implements CommandLineRunner {
 
     //Funções
     private void conferirQuantEmEstoque() {
+        System.out.println("Insira o código de barras ou a descrição do produto para saber seu preço: ");
+        codOuDesc = in.next();
+        List<Produto> produtos = produtoRepository.listarProdutosPorDescricaoOuCod(codOuDesc);
+        Produto produto = produtos.get(0);
+        BigDecimal qtde = movimentacaoDeVendaRepository.qtdeEntradaEmEstoque(codOuDesc)
+                .subtract(movimentacaoDeVendaRepository.qtdeSaidaDoEstoque(codOuDesc));
+
+        System.out.printf("Constam no estoque %.2f %s de %s, ",qtde, produto.getUnidadeMedidaVendida(),
+                produto.getDescricao());
     }
 
     private void conferirPrecoProd() {
@@ -231,7 +245,7 @@ public class TalentsTechBankApplication implements CommandLineRunner {
 
         List<Produto> produtos = produtoRepository.listarProdutosPorDescricaoOuCod(codOuDesc);
         Produto produto = produtos.get(0);
-        System.out.printf("O preço do %s é %.2f%n", produto.getDescricao(), produto.getValorVenda());
+        System.out.printf("O preço do %s é R$ %.2f%n", produto.getDescricao(), produto.getValorVenda());
     }
 
     public void realizarVenda() {
@@ -255,7 +269,7 @@ public class TalentsTechBankApplication implements CommandLineRunner {
             ItemVenda item = new ItemVenda(venda, produto, quantidade);
             mp.add(new MovimentacaoDeProduto(produto, quantidade,
                     LocalDateTime.now(),
-                    "Vendido",
+                    "vendido",
                     null, null, null, null));
             item.setValorTotal(total);
             System.out.println("Finalizar compra? S/N");
@@ -273,6 +287,7 @@ public class TalentsTechBankApplication implements CommandLineRunner {
 
     public void inserirReceitaAvulsa() {
         /* entrada */
+        int finalizar_receita = 0;
         System.out.print("Insira a descrição do novo produto:");
         String descricao = in.next();
 
@@ -302,17 +317,56 @@ public class TalentsTechBankApplication implements CommandLineRunner {
 
         System.out.println("Insira o lote do novo produto:");
         String lote = in.next();
+        List<MovimentacaoDeProduto> mp = new ArrayList<>();
         // TODO pegar valor de custo
         // Cadastro de novo produto
-        // Produto produto = new Produto(descricao, valor_custo, peso_unitario,
-        // unidade_medida_vendida, quantidade,
-        // codigo_barras, valor_venda);
+        do {
+            System.out.println("Insira o código de barras ou a descrição do ingrediente: ");
+            codOuDesc = in.next();
 
-        // produto = produtoService.cadastrarProduto(produto);
+            System.out.println("Insira a quantidade usada desse ingrediente: ");
+            quantidade = valueOf(in.nextDouble());
 
-        // movimentacaoDeProdutoService.fabricar(produto, quantidade, validade,
-        // fabricacao, lote);
+            // Busquei um produto por código de barras
+            List<Produto> produtos = produtoRepository.listarProdutosPorDescricaoOuCod(codOuDesc);
+            Produto produto = produtos.get(0);
+            total = total.add(produto.getValorDeCusto().multiply(quantidade));
+            // Criei um novo item venda
+            mp.add(new MovimentacaoDeProduto(produto, quantidade,
+                    LocalDateTime.now(),
+                    "fabricado",
+                    null, null, null, null));
+
+            System.out.println("Finalizar receita? S/N");
+            char escolha = in.next().charAt(0);
+            if (escolha == 's' || escolha == 'S') {
+                movimentacaoDeVendaRepository.saveAll(mp);
+                finalizar_receita++;
+            }
+        } while (finalizar_receita == 0);
+
+        Produto produto = new Produto(descricao, total, peso_unitario,
+                unidade_medida_vendida, codigo_barras, valor_venda);
+
+        produto = produtoRepository.save(produto);
     }
+
+   /* private void inserirFornadaPaoFrances() {
+        // TODO receita pão
+        total = total.add(produto.getValorDeCusto().multiply(quantidade));
+        // Criei um novo item venda
+        LocalDateTime agora = LocalDateTime.now();
+        mp.add(new MovimentacaoDeProduto(produto, quantidade,
+                LocalDateTime.now(),
+                "consumido_materia_prima",
+                agora.plus(3, ChronoUnit.DAYS), agora, null, null));
+
+        System.out.println("Finalizar receita? S/N");
+        char escolha = in.next().charAt(0);
+        if (escolha == 's' || escolha == 'S') {
+            movimentacaoDeVendaRepository.saveAll(mp);
+        }
+    }*/
 
     public void inserirProdutoNoEstoque() {
         System.out.println("Insira o código de barras ou a descrição do produto que deseja inserir: ");
@@ -321,11 +375,11 @@ public class TalentsTechBankApplication implements CommandLineRunner {
         System.out.println("Insira a quantidade do produto que deseja inserir: ");
         quantidade = valueOf(in.nextDouble());
 
-        System.out.println("Insira a data de  fabricação do novo produto:");
-        LocalDateTime fabricacao = LocalDateTime.parse(in.next());
+        System.out.println("Insira a data de fabricação do novo produto (AAAA-MM-DD):");
+        LocalDate fabricacao = LocalDate.parse(in.next());
 
-        System.out.println("Insira a data de  vencimento do novo produto:");
-        LocalDateTime validade = LocalDateTime.parse(in.next());
+        System.out.println("Insira a data de vencimento do novo produto: (AAAA-MM-DD)");
+        LocalDate validade = LocalDate.parse(in.next());
 
         System.out.println("Insira o nome de fornecedor do novo produto:");
         String fornecedor = in.next();
@@ -333,14 +387,14 @@ public class TalentsTechBankApplication implements CommandLineRunner {
         System.out.println("Insira o lote do novo produto:");
         String lote = in.next();
 
-        // produtoService.listarProdutosPorDescricaoOuCod(descricaoOuCod);
-        // Long id_produto =
-        // produtoService.listarProdutosPorDescricaoOuCod(descricaoOuCod).get(0).getId();
+        List<Produto> produtos = produtoRepository.listarProdutosPorDescricaoOuCod(codOuDesc);
+        Produto produto = produtos.get(0);
+        MovimentacaoDeProduto mp = new MovimentacaoDeProduto(produto, quantidade, LocalDateTime.now(), "Comprado", validade,
+        fabricacao, fornecedor, lote);
+        movimentacaoDeVendaRepository.save(mp);
 
-        // movimentacaoDeProdutoService.comprar(produto,
-        // quantidade,validade,fabricacao,fornecedor, lote);
-
-        // System.out.println(movimentacaoDeProdutoService.listarCompras());
+        System.out.printf("%.2f%s de %s foram adicionados no estoque",quantidade, produto.getUnidadeMedidaVendida(),
+                produto.getDescricao());
     }
 
     public void cadastrarProdutoIneditoEstoque() {
@@ -368,6 +422,12 @@ public class TalentsTechBankApplication implements CommandLineRunner {
                 valor_venda);
 
         produtoRepository.save(produto);
+    }
+
+    public void filtrarProdutosAtivos() {
+
+        List<Produto> produtos = produtoRepository.listarProdutos();
+        produtos.forEach(System.out::println);
     }
 }
 
