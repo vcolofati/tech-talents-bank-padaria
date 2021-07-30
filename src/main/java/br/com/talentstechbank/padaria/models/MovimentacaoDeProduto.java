@@ -33,7 +33,7 @@ public class MovimentacaoDeProduto implements Serializable {
     @Column
     private BigDecimal quantidade;
 
-    @Column(name = "data_movimentação")
+    @Column(name = "data_movimentacao")
     private LocalDateTime dataMovimentacao;
 
     @Column(name = "especie_da_movimentacao")
@@ -163,10 +163,7 @@ public class MovimentacaoDeProduto implements Serializable {
 			return false;
 		MovimentacaoDeProduto other = (MovimentacaoDeProduto) obj;
 		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
+			return other.id == null;
+		} else return id.equals(other.id);
 	}
 }

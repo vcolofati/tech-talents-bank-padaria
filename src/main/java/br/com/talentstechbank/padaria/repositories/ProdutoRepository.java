@@ -10,20 +10,14 @@ import br.com.talentstechbank.padaria.models.Produto;
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 	
 	@Query(value = "SELECT * FROM tb_produto WHERE status = true", nativeQuery = true)
-	List<Produto> listarProdutos();
+	List<Produto> listarProdutosAtivos();
 
 	@Query(value = "SELECT * FROM tb_produto WHERE status = false", nativeQuery = true)
 	List<Produto> listarProdutosInativos();
 	
-	@Query(value = "SELECT * FROM tb_produto WHERE id = ?1 AND status = true", nativeQuery = true)
-	Produto listarProduto(Long id);
-	
-	@Query(value = "SELECT * from tb_produto WHERE descricao ilike %?1% AND status = true", nativeQuery = true)
-	List<Produto> listarProdutosPorDescricao(String descricao);
-	
-	@Query(value = "SELECT * FROM tb_produto WHERE codigo_barras = ?1 AND status = true", nativeQuery = true)
-	Produto listarProdutoPorCodBarra(String codigo);
-	
-	@Query(value = "SELECT * from tb_produto WHERE (descricao ilike %?1% OR codigo_barras = ?1) AND status = true", nativeQuery = true)
+	@Query(value = "SELECT * FROM tb_produto", nativeQuery = true)
+	List<Produto> listarTodosProdutos();
+
+	@Query(value = "SELECT * from tb_produto WHERE (descricao ilike upper(concat('%', :descricaoOuCod, '%')) OR codigo_barras = :descricaoOuCod) AND status = true", nativeQuery = true)
 	List<Produto> listarProdutosPorDescricaoOuCod(String descricaoOuCod);
 }
