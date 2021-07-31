@@ -264,6 +264,7 @@ public class TalentsTechBankApplication implements CommandLineRunner {
         vendaRepository.save(venda);
         int finalizar_compra = 0;
         List<MovimentacaoDeProduto> mp = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
         do {
             System.out.println("Insira o código de barras ou a descrição do produto: ");
             codOuDesc = in.next();
@@ -282,7 +283,13 @@ public class TalentsTechBankApplication implements CommandLineRunner {
                     "vendido",
                     null, null, null, null));
             item.setValorTotal(total);
-            System.out.println("Finalizar compra? S/N");
+            String string = String.format("%.2f %s %s : R$ %.2f ,Total: R$ %.2f \n", quantidade,
+                    produto.getUnidadeMedidaVendida(), produto.getDescricao(), produto.getValorVenda(),
+                    produto.getValorVenda().multiply(quantidade));
+            sb.append(string);
+            System.out.println(sb);
+            System.out.printf("\nValor total carrinho: R$ %.2f%n", total);
+            System.out.println("    Finalizar compra? S/N");
             char escolha = in.next().charAt(0);
             if (escolha == 's' || escolha == 'S') {
                 movimentacaoDeVendaRepository.saveAll(mp);
