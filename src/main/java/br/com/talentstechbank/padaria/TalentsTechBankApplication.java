@@ -127,11 +127,11 @@ public class TalentsTechBankApplication implements CommandLineRunner {
                 /* 4.1 */
                 break;
             case 2: /* Inserir fornada de pão em estoque */
-                //  inserirFornadaPaoFrances();
+                inserirFornadaPaoFrances();
                 /* 4.2 */
                 break;
             case 3:/*Inserir bolo em estoque*/
-                //    inserirbolo();
+                inserirFornadaDeBolo();
 //              /* 4.3 *
                 break;
             case 0:
@@ -235,8 +235,15 @@ public class TalentsTechBankApplication implements CommandLineRunner {
         codOuDesc = in.next();
         List<Produto> produtos = produtoRepository.listarProdutosPorDescricaoOuCod(codOuDesc);
         Produto produto = produtos.get(0);
-        BigDecimal qtde = movimentacaoDeVendaRepository.qtdeEntradaEmEstoque(codOuDesc)
-                .subtract(movimentacaoDeVendaRepository.qtdeSaidaDoEstoque(codOuDesc));
+        BigDecimal qtdeEntrada = movimentacaoDeVendaRepository.qtdeEntradaEmEstoque(produto.getId());
+        BigDecimal qtdeSaida = movimentacaoDeVendaRepository.qtdeSaidaDoEstoque(produto.getId());
+        if (qtdeEntrada == null) {
+            qtdeEntrada = BigDecimal.valueOf(0);
+        }
+        if (qtdeSaida == null) {
+            qtdeSaida = BigDecimal.valueOf(0);
+        }
+        BigDecimal qtde = qtdeEntrada.subtract(qtdeSaida);
 
         System.out.printf("Constam no estoque %.2f %s de %s, ", qtde, produto.getUnidadeMedidaVendida(),
                 produto.getDescricao());
@@ -348,18 +355,18 @@ public class TalentsTechBankApplication implements CommandLineRunner {
         produtoRepository.save(produto);
     }
 
-/*    private void inserirFornadaPaoFrances() {
+    private void inserirFornadaPaoFrances() {
         // TODO receita pão
 
         // Criei um novo item venda
-        LocalDateTime agora = LocalDateTime.now();
+        LocalDate agora = LocalDate.now();
 
         //Receita
         String ingrediente1 = "farinha";
         BigDecimal quantidade1 = BigDecimal.valueOf(1);
         String ingrediente2 = "fermento";
         BigDecimal quantidade2 = BigDecimal.valueOf(0.5);
-        String ingrediente3 = "ovos"; //cartela contém 30
+        String ingrediente3 = "ovo"; //cartela contém 30
         BigDecimal quantidade3 = BigDecimal.valueOf(0.2); //6 ovos
         BigDecimal qtdePaes = BigDecimal.valueOf(50);       /////rende 50 paes****
 
@@ -375,7 +382,7 @@ public class TalentsTechBankApplication implements CommandLineRunner {
         Produto i3 = produtos.get(0);
 
         //registra a retirada dos ingredientes do estoque
-        new MovimentacaoDeProduto(i1,
+        MovimentacaoDeProduto m1 = new MovimentacaoDeProduto(i1,
                 quantidade1,
                 LocalDateTime.now(),
                 "consumido_materia_prima",
@@ -383,7 +390,7 @@ public class TalentsTechBankApplication implements CommandLineRunner {
                 null,
                 null,
                 null);
-        new MovimentacaoDeProduto(i2,
+        MovimentacaoDeProduto m2 =new MovimentacaoDeProduto(i2,
                 quantidade2,
                 LocalDateTime.now(),
                 "consumido_materia_prima",
@@ -391,7 +398,7 @@ public class TalentsTechBankApplication implements CommandLineRunner {
                 null,
                 null,
                 null);
-        new MovimentacaoDeProduto(i3,
+        MovimentacaoDeProduto m3 =new MovimentacaoDeProduto(i3,
                 quantidade3,
                 LocalDateTime.now(),
                 "consumido_materia_prima",
@@ -401,19 +408,19 @@ public class TalentsTechBankApplication implements CommandLineRunner {
                 null);
 
         //registra a entrada dos pães em estoque
-        new MovimentacaoDeProduto(pao,qtdePaes,
+        MovimentacaoDeProduto m4 = new MovimentacaoDeProduto(pao,qtdePaes,
                 LocalDateTime.now(),
                 "fabricado",
                 agora.plus(3, ChronoUnit.DAYS), LocalDate.now(), "Pão & Cia", null);
 
-        movimentacaoDeVendaRepository.saveAll(mp);
+        movimentacaoDeVendaRepository.saveAll(Arrays.asList(m1, m2, m3, m4));
 
-    }*/
+    }
 
- /*   private void inserirFornadaDeBolo() {
+    private void inserirFornadaDeBolo() {
         // TODO receita 3 bolos
 
-        LocalDateTime agora = LocalDateTime.now();
+        LocalDate agora = LocalDate.now();
 
         //Receita
         String ingrediente1 = "farinha";
@@ -445,7 +452,7 @@ public class TalentsTechBankApplication implements CommandLineRunner {
         Produto i5 = produtos.get(0);
 
         //registra a retirada dos ingredientes do estoque
-        MovimentacaoDeProduto consumido_materia_prima = new MovimentacaoDeProduto(i1,
+        MovimentacaoDeProduto m1 = new MovimentacaoDeProduto(i1,
                 quantidade1,
                 LocalDateTime.now(),
                 "consumido_materia_prima",
@@ -453,7 +460,7 @@ public class TalentsTechBankApplication implements CommandLineRunner {
                 null,
                 null,
                 null);
-        new MovimentacaoDeProduto(i2,
+        MovimentacaoDeProduto m2 =new MovimentacaoDeProduto(i2,
                 quantidade2,
                 LocalDateTime.now(),
                 "consumido_materia_prima",
@@ -461,7 +468,7 @@ public class TalentsTechBankApplication implements CommandLineRunner {
                 null,
                 null,
                 null);
-        new MovimentacaoDeProduto(i3,
+        MovimentacaoDeProduto m3 =new MovimentacaoDeProduto(i3,
                 quantidade3,
                 LocalDateTime.now(),
                 "consumido_materia_prima",
@@ -469,7 +476,7 @@ public class TalentsTechBankApplication implements CommandLineRunner {
                 null,
                 null,
                 null);
-        new MovimentacaoDeProduto(i4,
+        MovimentacaoDeProduto m4 =new MovimentacaoDeProduto(i4,
                 quantidade4,
                 LocalDateTime.now(),
                 "consumido_materia_prima",
@@ -477,7 +484,7 @@ public class TalentsTechBankApplication implements CommandLineRunner {
                 null,
                 null,
                 null);
-        new MovimentacaoDeProduto(i5,
+        MovimentacaoDeProduto m5 = new MovimentacaoDeProduto(i5,
                 quantidade5,
                 LocalDateTime.now(),
                 "consumido_materia_prima",
@@ -488,15 +495,14 @@ public class TalentsTechBankApplication implements CommandLineRunner {
 
 
         //registra a entrada dos bolos em estoque
-        new MovimentacaoDeProduto(bolo, qtdeBolos,
+        MovimentacaoDeProduto m6 = new MovimentacaoDeProduto(bolo, qtdeBolos,
                 LocalDateTime.now(),
                 "fabricado",
                 agora.plus(3, ChronoUnit.DAYS), LocalDate.now(), "Pão & Cia", null);
 
-        movimentacaoDeVendaRepository.saveAll(consumido_materia_prima);
+        movimentacaoDeVendaRepository.saveAll(Arrays.asList(m1, m2, m3, m4, m5, m6));
 
-    }*/
-
+    }
 
     public void inserirProdutoNoEstoque() {
         System.out.println("Insira o código de barras ou a descrição do produto que deseja inserir: ");
@@ -561,6 +567,10 @@ public class TalentsTechBankApplication implements CommandLineRunner {
 
     public void filtrarProdutosInativos() {
         List<Produto> produtos = produtoRepository.listarProdutosInativos();
+        if(produtos.isEmpty()) {
+            System.out.println("Não há produtos inativos");
+            return;
+        }
         produtos.forEach(System.out::println);
     }
 
