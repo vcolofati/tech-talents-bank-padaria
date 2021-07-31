@@ -127,10 +127,11 @@ public class TalentsTechBankApplication implements CommandLineRunner {
                 /* 4.1 */
                 break;
             case 2: /* Inserir fornada de pão em estoque */
-                //inserirFornadaPaoFrances();
+                //  inserirFornadaPaoFrances();
                 /* 4.2 */
                 break;
             case 3:/*Inserir bolo em estoque*/
+                //    inserirbolo();
 //              /* 4.3 *
                 break;
             case 0:
@@ -237,7 +238,7 @@ public class TalentsTechBankApplication implements CommandLineRunner {
         BigDecimal qtde = movimentacaoDeVendaRepository.qtdeEntradaEmEstoque(codOuDesc)
                 .subtract(movimentacaoDeVendaRepository.qtdeSaidaDoEstoque(codOuDesc));
 
-        System.out.printf("Constam no estoque %.2f %s de %s, ",qtde, produto.getUnidadeMedidaVendida(),
+        System.out.printf("Constam no estoque %.2f %s de %s, ", qtde, produto.getUnidadeMedidaVendida(),
                 produto.getDescricao());
     }
 
@@ -347,22 +348,155 @@ public class TalentsTechBankApplication implements CommandLineRunner {
         produtoRepository.save(produto);
     }
 
-   /* private void inserirFornadaPaoFrances() {
+/*    private void inserirFornadaPaoFrances() {
         // TODO receita pão
-        total = total.add(produto.getValorDeCusto().multiply(quantidade));
+
         // Criei um novo item venda
         LocalDateTime agora = LocalDateTime.now();
-        mp.add(new MovimentacaoDeProduto(produto, quantidade,
+
+        //Receita
+        String ingrediente1 = "farinha";
+        BigDecimal quantidade1 = BigDecimal.valueOf(1);
+        String ingrediente2 = "fermento";
+        BigDecimal quantidade2 = BigDecimal.valueOf(0.5);
+        String ingrediente3 = "ovos"; //cartela contém 30
+        BigDecimal quantidade3 = BigDecimal.valueOf(0.2); //6 ovos
+        BigDecimal qtdePaes = BigDecimal.valueOf(50);       /////rende 50 paes****
+
+
+        //busca ingredentes em produtos
+        List<Produto> produtos = produtoRepository.listarProdutosPorDescricaoOuCod("pão");
+        Produto pao = produtos.get(0);
+        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente1);
+        Produto i1 = produtos.get(0);
+        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente2);
+        Produto i2 = produtos.get(0);
+        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente3);
+        Produto i3 = produtos.get(0);
+
+        //registra a retirada dos ingredientes do estoque
+        new MovimentacaoDeProduto(i1,
+                quantidade1,
                 LocalDateTime.now(),
                 "consumido_materia_prima",
-                agora.plus(3, ChronoUnit.DAYS), agora, null, null));
+                null,
+                null,
+                null,
+                null);
+        new MovimentacaoDeProduto(i2,
+                quantidade2,
+                LocalDateTime.now(),
+                "consumido_materia_prima",
+                null,
+                null,
+                null,
+                null);
+        new MovimentacaoDeProduto(i3,
+                quantidade3,
+                LocalDateTime.now(),
+                "consumido_materia_prima",
+                null,
+                null,
+                null,
+                null);
 
-        System.out.println("Finalizar receita? S/N");
-        char escolha = in.next().charAt(0);
-        if (escolha == 's' || escolha == 'S') {
-            movimentacaoDeVendaRepository.saveAll(mp);
-        }
+        //registra a entrada dos pães em estoque
+        new MovimentacaoDeProduto(pao,qtdePaes,
+                LocalDateTime.now(),
+                "fabricado",
+                agora.plus(3, ChronoUnit.DAYS), LocalDate.now(), "Pão & Cia", null);
+
+        movimentacaoDeVendaRepository.saveAll(mp);
+
     }*/
+
+ /*   private void inserirFornadaDeBolo() {
+        // TODO receita 3 bolos
+
+        LocalDateTime agora = LocalDateTime.now();
+
+        //Receita
+        String ingrediente1 = "farinha";
+        BigDecimal quantidade1 = valueOf(1);
+        String ingrediente2 = "fermento";
+        BigDecimal quantidade2 = valueOf(0.5);
+        String ingrediente3 = "ovos"; //cartela contém 30
+        BigDecimal quantidade3 = valueOf(0.3); //6
+        String ingrediente4 = "leite";
+        BigDecimal quantidade4 = valueOf(2);
+        String ingrediente5 = "margarina";
+        BigDecimal quantidade5 = valueOf(1);
+        BigDecimal qtdeBolos = valueOf(3); /////rende 3 bolos*****
+
+
+        //busca ingredentes em produtos
+
+        List<Produto> produtos = produtoRepository.listarProdutosPorDescricaoOuCod("bolo");
+        Produto bolo = produtos.get(0);
+        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente1);
+        Produto i1 = produtos.get(0);
+        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente2);
+        Produto i2 = produtos.get(0);
+        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente3);
+        Produto i3 = produtos.get(0);
+        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente4);
+        Produto i4 = produtos.get(0);
+        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente5);
+        Produto i5 = produtos.get(0);
+
+        //registra a retirada dos ingredientes do estoque
+        MovimentacaoDeProduto consumido_materia_prima = new MovimentacaoDeProduto(i1,
+                quantidade1,
+                LocalDateTime.now(),
+                "consumido_materia_prima",
+                null,
+                null,
+                null,
+                null);
+        new MovimentacaoDeProduto(i2,
+                quantidade2,
+                LocalDateTime.now(),
+                "consumido_materia_prima",
+                null,
+                null,
+                null,
+                null);
+        new MovimentacaoDeProduto(i3,
+                quantidade3,
+                LocalDateTime.now(),
+                "consumido_materia_prima",
+                null,
+                null,
+                null,
+                null);
+        new MovimentacaoDeProduto(i4,
+                quantidade4,
+                LocalDateTime.now(),
+                "consumido_materia_prima",
+                null,
+                null,
+                null,
+                null);
+        new MovimentacaoDeProduto(i5,
+                quantidade5,
+                LocalDateTime.now(),
+                "consumido_materia_prima",
+                null,
+                null,
+                null,
+                null);
+
+
+        //registra a entrada dos bolos em estoque
+        new MovimentacaoDeProduto(bolo, qtdeBolos,
+                LocalDateTime.now(),
+                "fabricado",
+                agora.plus(3, ChronoUnit.DAYS), LocalDate.now(), "Pão & Cia", null);
+
+        movimentacaoDeVendaRepository.saveAll(consumido_materia_prima);
+
+    }*/
+
 
     public void inserirProdutoNoEstoque() {
         System.out.println("Insira o código de barras ou a descrição do produto que deseja inserir: ");
@@ -386,10 +520,10 @@ public class TalentsTechBankApplication implements CommandLineRunner {
         List<Produto> produtos = produtoRepository.listarProdutosPorDescricaoOuCod(codOuDesc);
         Produto produto = produtos.get(0);
         MovimentacaoDeProduto mp = new MovimentacaoDeProduto(produto, quantidade, LocalDateTime.now(), "comprado", validade,
-        fabricacao, fornecedor, lote);
+                fabricacao, fornecedor, lote);
         movimentacaoDeVendaRepository.save(mp);
 
-        System.out.printf("%.2f%s de %s foram adicionados no estoque",quantidade, produto.getUnidadeMedidaVendida(),
+        System.out.printf("%.2f%s de %s foram adicionados no estoque", quantidade, produto.getUnidadeMedidaVendida(),
                 produto.getDescricao());
     }
 
@@ -413,7 +547,7 @@ public class TalentsTechBankApplication implements CommandLineRunner {
         System.out.println("Insira o valor de venda do novo produto:");
         BigDecimal valor_venda = valueOf(in.nextDouble());
 
-        // Cadastrei um novo produto
+        // Cadastra um novo produto em tb_produtos
         produto = new Produto(descricao, valor_custo, peso_unitario, unidade_medida_peso, codigo_barras,
                 valor_venda);
 
