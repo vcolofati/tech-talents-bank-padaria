@@ -1,5 +1,6 @@
 package br.com.talentstechbank.padaria;
 
+import br.com.talentstechbank.padaria.exceptions.EntradaInvalidaException;
 import br.com.talentstechbank.padaria.models.ItemVenda;
 import br.com.talentstechbank.padaria.models.MovimentacaoDeProduto;
 import br.com.talentstechbank.padaria.models.Produto;
@@ -10,6 +11,7 @@ import br.com.talentstechbank.padaria.repositories.MovimentacaoDeVendaRepository
 import br.com.talentstechbank.padaria.repositories.ProdutoRepository;
 import br.com.talentstechbank.padaria.repositories.VendaRepository;
 
+import br.com.talentstechbank.padaria.utils.ScannerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.boot.CommandLineRunner;
@@ -19,8 +21,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,17 +50,18 @@ public class TalentsTechBankApplication implements CommandLineRunner {
     BigDecimal total = new BigDecimal(0);
     String codOuDesc;
     BigDecimal quantidade;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     String senhaAdmin = System.getenv("SENHA_ADMIN");
     String senha;
 
     Scanner in = new Scanner(System.in).useDelimiter("\n");
 
     public static void main(String[] args) {
-        SpringApplication.run(TalentsTechBankApplication.class, args);
+            SpringApplication.run(TalentsTechBankApplication.class, args);
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         menuPrincipal();
         in.close();
     }
@@ -74,38 +77,44 @@ public class TalentsTechBankApplication implements CommandLineRunner {
             System.out.println("3- Conferir quantidade de determinado produto em estoque");
             System.out.println("4- Inserir produção");
             System.out.println("8 - Acessar menu de Gerenciamento de Estoque"); // *
-            System.out.println("9 - Acessar menu de Controle de caixa"); // *
+            //System.out.println("9 - Acessar menu de Controle de caixa"); // *
 
             System.out.println("____________________________\n");
             System.out.print("Opção: ");
-            int opc = in.nextInt();
+            try {
+                int opc = ScannerUtils.validaePegaInteiro(in);
 
-            switch (opc) {
-                case 1: /* Realizar venda */
-                    realizarVenda();
-                    break;
-                case 2: /* Conferir preço de produto */
-                    conferirPrecoProd();
-                    break;
-                case 3: /* Conferir quantidade de determinado produto em estoque */
-                    conferirQuantEmEstoque();
-                    break;
-                case 4:
-                    menuProdProp();
-                    break;
-                case 8:
-                    menuAdministrativo8();
-                    break;
-                case 9:
-                    menuAdmininstrativo9();
-                    break;
-                case 0:
-                    loop = false;
-                    break;
-                default:
-                    System.out.println("Por favor, digite uma opção válida!\n");
-                    break;
+                switch (opc) {
+                    case 1: /* Realizar venda */
+                        realizarVenda();
+                        break;
+                    case 2: /* Conferir preço de produto */
+                        conferirPrecoProd();
+                        break;
+                    case 3: /* Conferir quantidade de determinado produto em estoque */
+                        conferirQuantEmEstoque();
+                        break;
+                    case 4:
+                        menuProdProp();
+                        break;
+                    case 8:
+                        menuAdministrativo8();
+                        break;
+                    case 9:
+                        menuAdmininstrativo9();
+                        break;
+                    case 0:
+                        loop = false;
+                        break;
+                    default:
+                        System.out.println("Por favor, digite uma opção válida!\n");
+                        break;
+                }
+            } catch (EntradaInvalidaException e) {
+                System.out.println("Permitido apenas valores inteiros");
             }
+
+
         }
     }
 
@@ -113,120 +122,133 @@ public class TalentsTechBankApplication implements CommandLineRunner {
         System.out.println("*** Inserir produção própria ***");
         System.out.println("1- Inserir receita avulsa em estoque");
         System.out.println("2- Inserir fornada de pão em estoque");
-        // System.out.println("3- Inserir bolo em estoque ");
+        System.out.println("3- Inserir bolo em estoque ");
         System.out.println("0- Sair");
 
         System.out.println("____________________________");
         System.out.println();
         System.out.print("Opção: ");
-        int opc = in.nextInt();
+        try {
+            int opc = ScannerUtils.validaePegaInteiro(in);
 
-        switch (opc) {
-            case 1: /* Inserir receita avulsa em estoque */
-                inserirReceitaAvulsa();
-                /* 4.1 */
-                break;
-            case 2: /* Inserir fornada de pão em estoque */
-                inserirFornadaPaoFrances();
-                /* 4.2 */
-                break;
-            case 3:/*Inserir bolo em estoque*/
-                inserirFornadaDeBolo();
-//              /* 4.3 *
-                break;
-            case 0:
-                break;
-            default:
-                System.out.println("Por favor, digite uma opção válida!\n");
-                break;
+            switch (opc) {
+                case 1: /* Inserir receita avulsa em estoque */
+                    inserirReceitaAvulsa();
+                    /* 4.1 */
+                    break;
+                case 2: /* Inserir fornada de pão em estoque */
+                    inserirFornadaPaoFrances();
+                    /* 4.2 */
+                    break;
+                case 3:/*Inserir bolo em estoque*/
+                    inserirFornadaDeBolo();
+    //              /* 4.3 *
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Por favor, digite uma opção válida!\n");
+                    break;
+            }
+        } catch (EntradaInvalidaException e) {
+            System.out.println("Permitido apenas valores inteiros");
         }
     }
 
     public void menuAdministrativo8() {
         System.out.print("Por favor, digite a senha administrativa: ");
-        senha = in.next();
+        try {
+            senha = ScannerUtils.validaePegaString(in);
 
-        if (senha.equals(senhaAdmin)) {
-            System.out.println("*** Gerenciamento de Estoque***"); /* senha */
-            System.out.println("1- Inserir produto em estoque");
-            System.out.println("2- Cadastrar produto inédito em estoque");
-            System.out.println("3- Relação de todos os produtos ativos em estoque");
-            System.out.println("4- Relação de todos os produtos em estoque");
-            System.out.println("5- Relação de produtos em estoque por período");
-            System.out.println("6- Alterar status de produto");
-            System.out.println("7- Relação de todos os produtos inativos em estoque");
-            System.out.println("0- Sair");
+            if (senha.equals(senhaAdmin)) {
+                System.out.println("*** Gerenciamento de Estoque***"); /* senha */
+                System.out.println("1- Inserir produto em estoque");
+                System.out.println("2- Cadastrar produto inédito em estoque");
+                System.out.println("3- Relação de todos os produtos ativos em estoque");
+                System.out.println("4- Relação de todos os produtos inativos em estoque");
+                System.out.println("5- Relação de todos os produtos em estoque");
+                System.out.println("6- Desativar um produto");
+                System.out.println("7- Ativar produto");
+                System.out.println("0- Sair");
 
-            System.out.println("____________________________");
-            System.out.println();
-            System.out.print("Opção: ");
-            int opc = in.nextInt();
+                System.out.println("____________________________");
+                System.out.println();
+                System.out.print("Opção: ");
+                int opc = ScannerUtils.validaePegaInteiro(in);
 
-            switch (opc) {
-                // comprar - movimentar produto em estoque
-                case 1: /* Inserir produtos em estoque */
-                    inserirProdutoNoEstoque();
-                    break;
-                case 2:/* Cadastrar produto inédito em estoque */
-                    cadastrarProdutoIneditoEstoque();
-                    break;
-                case 3: /* Relação de todos os produtos ativos em estoque */
-                    filtrarProdutosAtivos();
-                    break;
-                case 4: /* Relação de todos os produtos ativos e inativos em estoque */
-                    filtrarTodosProdutos();
-                    break;
-                case 5: /* TODO Relação de produtos em estoque por período */
-                    break;
-                case 6: /* TODO Alterar status de produto. */
-                    desativarProduto();
-                    break;
-                case 7: /*7- Relação de todos os produtos inativos em estoque */
-                    filtrarProdutosInativos();
-                    break;
-                case 0:
-                    break;
-                default:
-                    System.out.println("Por favor, digite uma opção válida!\n");
-                    break;
+                switch (opc) {
+                    // comprar - movimentar produto em estoque
+                    case 1: /* Inserir produtos em estoque */
+                        inserirProdutoNoEstoque();
+                        break;
+                    case 2:/* Cadastrar produto inédito em estoque */
+                        cadastrarProdutoIneditoEstoque();
+                        break;
+                    case 3: /* Relação de todos os produtos ativos em estoque */
+                        filtrarProdutosAtivos();
+                        break;
+                    case 4: /*  */
+                        filtrarProdutosInativos();
+                        break;
+                    case 5: /* Relação de todos os produtos ativos e inativos em estoque */
+                        filtrarTodosProdutos();
+                        break;
+                    case 6: /*  */
+                        desativarProduto();
+                        break;
+                    case 7: /*  */
+                        ativarProduto();
+                        break;
+                    case 0:
+                        break;
+                    default:
+                        System.out.println("Por favor, digite uma opção válida!\n");
+                        break;
+                }
+            } else {
+                System.out.println("Senha administrativa incorreta");
             }
-        } else {
-            System.out.println("Senha administrativa incorreta");
+        } catch (EntradaInvalidaException e) {
+            System.out.println("Opção inválida ou não existente");
         }
     }
 
     public void menuAdmininstrativo9() {
         System.out.print("Por favor, digite a senha administrativa: ");
-        senha = in.next();
+        try {
+            senha = ScannerUtils.validaePegaString(in);
 
-        if (senha.equals(senhaAdmin)) {
+            if (senha.equals(senhaAdmin)) {
 
-            System.out.println("*** Controle de caixa***"); /* senha */
-            System.out.println("1- Checar vendas por período ");
-            //System.out.println("2- Entradas de caixa do dia"); /*preços total de vendas*/
-            //System.out.println("3- Lucro bruto do dia"); /*preços total de vendas - preço total de custo*/
-            System.out.println("0- Sair");
+                System.out.println("*** Controle de caixa***"); /* senha */
+                System.out.println("1- Checar vendas por período ");
+                //System.out.println("2- Entradas de caixa do dia"); /*preços total de vendas*/
+                //System.out.println("3- Lucro bruto do dia"); /*preços total de vendas - preço total de custo*/
+                System.out.println("0- Sair");
 
-            System.out.println("____________________________");
-            System.out.println();
-            System.out.print("Opção: ");
-            int opcEmControleDeCaixa = in.nextInt();
+                System.out.println("____________________________");
+                System.out.println();
+                System.out.print("Opção: ");
+                int opc = ScannerUtils.validaePegaInteiro(in);
 
-            switch (opcEmControleDeCaixa) {
-                case 1: /* TODO Checar vendas por período */
-                    break;
-                case 2: /* TODO Entradas de caixa do dia*/
-                    break;
-                case 3: /* TODO Lucro bruto do dia*/
-                    break;
-                case 0:
-                    break;
-                default:
-                    System.out.println("Por favor, digite uma opção válida!\n");
-                    break;
+                switch (opc) {
+                    case 1: /* TODO Checar vendas por período */
+                        break;
+                    case 2: /* TODO Entradas de caixa do dia*/
+                        break;
+                    case 3: /* TODO Lucro bruto do dia*/
+                        break;
+                    case 0:
+                        break;
+                    default:
+                        System.out.println("Por favor, digite uma opção válida!\n");
+                        break;
+                }
+            } else {
+                System.out.println("Senha administrativa incorreta");
             }
-        } else {
-            System.out.println("Senha administrativa incorreta");
+        } catch (EntradaInvalidaException e) {
+            System.out.println("Opção inválida ou inexistente");
         }
     }
 
@@ -266,38 +288,44 @@ public class TalentsTechBankApplication implements CommandLineRunner {
         int finalizar_compra = 0;
         List<MovimentacaoDeProduto> mp = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
-        do {
-            System.out.println("Insira o código de barras ou a descrição do produto: ");
-            codOuDesc = in.next();
+        BigDecimal total = new BigDecimal(0);
+        try {
+            do {
+                System.out.println("Insira o código de barras ou a descrição do produto: ");
+                codOuDesc = in.next();
 
-            System.out.println("Insira a quantidade de produtos: ");
-            quantidade = valueOf(in.nextDouble());
+                System.out.println("Insira a quantidade de produtos: ");
+                quantidade = valueOf(in.nextDouble());
 
-            // Busquei um produto por código de barras
-            List<Produto> produtos = produtoRepository.listarProdutosPorDescricaoOuCod(codOuDesc);
-            Produto produto = produtos.get(0);
-            total = total.add(produto.getValorVenda().multiply(quantidade));
-            // Criei um novo item venda
-            ItemVenda item = new ItemVenda(venda, produto, quantidade);
-            mp.add(new MovimentacaoDeProduto(produto, quantidade,
-                    LocalDateTime.now(),
-                    "vendido",
-                    null, null, null, null));
-            item.setValorTotal(total);
-            String string = String.format("%.2f %s %s : R$ %.2f ,Total: R$ %.2f \n", quantidade,
-                    produto.getUnidadeMedidaVendida(), produto.getDescricao(), produto.getValorVenda(),
-                    produto.getValorVenda().multiply(quantidade));
-            sb.append(string);
-            System.out.println(sb);
-            System.out.printf("\nValor total carrinho: R$ %.2f%n", total);
-            System.out.println("    Finalizar compra? S/N");
-            char escolha = in.next().charAt(0);
-            if (escolha == 's' || escolha == 'S') {
-                movimentacaoDeVendaRepository.saveAll(mp);
+                // Busquei um produto por código de barras
+                List<Produto> produtos = produtoRepository.listarProdutosPorDescricaoOuCod(codOuDesc);
+                Produto produto = produtos.get(0);
+                total = total.add(produto.getValorVenda().multiply(quantidade));
+                // Criei um novo item venda
+                ItemVenda item = new ItemVenda(venda, produto, quantidade);
+                mp.add(new MovimentacaoDeProduto(produto, quantidade,
+                        LocalDateTime.now(),
+                        "vendido",
+                        null, null, null, null));
+                item.setValorTotal(total);
+                String string = String.format("%.2f %s %s : R$ %.2f ,Total: R$ %.2f \n", quantidade,
+                        produto.getUnidadeMedidaVendida(), produto.getDescricao(), produto.getValorVenda(),
+                        produto.getValorVenda().multiply(quantidade));
+                sb.append(string);
                 itemVendaRepository.save(item);
-                finalizar_compra++;
-            }
-        } while (finalizar_compra == 0);
+                System.out.println(sb);
+                System.out.printf("\nValor total carrinho: R$ %.2f%n", total);
+                System.out.println("    Finalizar compra? S/N");
+                char escolha = in.next().charAt(0);
+                if (escolha == 's' || escolha == 'S') {
+                    movimentacaoDeVendaRepository.saveAll(mp);
+
+                    finalizar_compra++;
+                }
+            } while (finalizar_compra == 0);
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Produto não encontrado ou inativo");
+        }
         venda.setDataHora(LocalDateTime.now());
         venda.setValor(total);
         vendaRepository.save(venda);
@@ -510,32 +538,38 @@ public class TalentsTechBankApplication implements CommandLineRunner {
     }
 
     public void inserirProdutoNoEstoque() {
-        System.out.println("Insira o código de barras ou a descrição do produto que deseja inserir: ");
-        codOuDesc = in.next();
+        try {
+            System.out.println("Insira o código de barras ou a descrição do produto que deseja inserir: ");
+            codOuDesc = in.next();
 
-        System.out.println("Insira a quantidade do produto que deseja inserir: ");
-        quantidade = valueOf(in.nextDouble());
+            System.out.println("Insira a quantidade do produto que deseja inserir: ");
+            quantidade = valueOf(in.nextDouble());
 
-        System.out.println("Insira a data de fabricação do novo produto (AAAA-MM-DD):");
-        LocalDate fabricacao = LocalDate.parse(in.next());
+            System.out.println("Insira a data de fabricação do novo produto (DD/MM/AAAA):");
+            String fabricacaoStr = in.next();
+            LocalDate fabricacao = LocalDate.parse(fabricacaoStr, formatter);
 
-        System.out.println("Insira a data de vencimento do novo produto: (AAAA-MM-DD)");
-        LocalDate validade = LocalDate.parse(in.next());
+            System.out.println("Insira a data de vencimento do novo produto: (DD/MM/AAAA)");
+            String validadeStr = in.next();
+            LocalDate validade = LocalDate.parse(validadeStr, formatter);
 
-        System.out.println("Insira o nome de fornecedor do novo produto:");
-        String fornecedor = in.next();
+            System.out.println("Insira o nome de fornecedor do novo produto:");
+            String fornecedor = in.next();
 
-        System.out.println("Insira o lote do novo produto:");
-        String lote = in.next();
+            System.out.println("Insira o lote do novo produto:");
+            String lote = in.next();
 
-        List<Produto> produtos = produtoRepository.listarProdutosPorDescricaoOuCod(codOuDesc);
-        Produto produto = produtos.get(0);
-        MovimentacaoDeProduto mp = new MovimentacaoDeProduto(produto, quantidade, LocalDateTime.now(), "comprado", validade,
-                fabricacao, fornecedor, lote);
-        movimentacaoDeVendaRepository.save(mp);
+            List<Produto> produtos = produtoRepository.listarProdutosPorDescricaoOuCod(codOuDesc);
+            Produto produto = produtos.get(0);
+            MovimentacaoDeProduto mp = new MovimentacaoDeProduto(produto, quantidade, LocalDateTime.now(), "comprado", validade,
+                    fabricacao, fornecedor, lote);
+            movimentacaoDeVendaRepository.save(mp);
 
-        System.out.printf("%.2f%s de %s foram adicionados no estoque", quantidade, produto.getUnidadeMedidaVendida(),
-                produto.getDescricao());
+            System.out.printf("%.2f%s de %s foram adicionados no estoque", quantidade, produto.getUnidadeMedidaVendida(),
+                    produto.getDescricao());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void cadastrarProdutoIneditoEstoque() {
@@ -584,12 +618,16 @@ public class TalentsTechBankApplication implements CommandLineRunner {
         produtos.forEach(System.out::println);
     }
 
+    public void produtoEmEstoquePorPeriodo() {
+
+    }
+
     private void ativarProduto() {
         System.out.println("Insira o código de barras ou a descrição do produto para ativar o produto");
         codOuDesc = in.next();
         List<Produto> produtos = produtoRepository.listarProdutosPorDescricaoOuCod(codOuDesc);
         Produto produto = produtos.get(0);
-        if(produto.getStatus() == false) {
+        if(!produto.getStatus()) {
             System.out.println("Produto já está ativo");
             return;
         }
@@ -602,7 +640,7 @@ public class TalentsTechBankApplication implements CommandLineRunner {
         codOuDesc = in.next();
         List<Produto> produtos = produtoRepository.listarProdutosPorDescricaoOuCod(codOuDesc);
         Produto produto = produtos.get(0);
-        if(produto.getStatus() == false) {
+        if(!produto.getStatus()) {
             System.out.println("Produto já está desativado");
             return;
         }
