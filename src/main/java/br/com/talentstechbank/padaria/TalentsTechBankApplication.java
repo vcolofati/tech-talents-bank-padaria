@@ -100,9 +100,9 @@ public class TalentsTechBankApplication implements CommandLineRunner {
                     case 8:
                         menuAdministrativo8();
                         break;
-                    case 9:
-                        menuAdmininstrativo9();
-                        break;
+//                    case 9:
+//                        menuAdmininstrativo9();
+//                        break;
                     case 0:
                         loop = false;
                         break;
@@ -405,41 +405,58 @@ public class TalentsTechBankApplication implements CommandLineRunner {
         BigDecimal qtdePaes = BigDecimal.valueOf(50);       /////rende 50 paes****
 
 
+            /*quantidade de ingredientes*/
+            int q=3;
+
+            for(j=0,j<q,j++){
+                List<Produto> produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente(j+1));               //busca ingredente em produtos
+                Produto ("i"+j") = produtos.get(j);
+                        MovimentacaoDeProduto m(j+1) = new MovimentacaoDeProduto(i+(j+1),        //registra a retirada do ingrediente do estoque
+                                quantidade+(j+1),
+                                LocalDateTime.now(),
+                                "consumido_materia_prima",
+                                null,
+                                null,
+                                null,
+                                null);
+            }
+
+
         //busca ingredentes em produtos
         List<Produto> produtos = produtoRepository.listarProdutosPorDescricaoOuCod("pão");
         Produto pao = produtos.get(0);
-        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente1);
-        Produto i1 = produtos.get(0);
-        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente2);
-        Produto i2 = produtos.get(0);
-        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente3);
-        Produto i3 = produtos.get(0);
-
-        //registra a retirada dos ingredientes do estoque
-        MovimentacaoDeProduto m1 = new MovimentacaoDeProduto(i1,
-                quantidade1,
-                LocalDateTime.now(),
-                "consumido_materia_prima",
-                null,
-                null,
-                null,
-                null);
-        MovimentacaoDeProduto m2 =new MovimentacaoDeProduto(i2,
-                quantidade2,
-                LocalDateTime.now(),
-                "consumido_materia_prima",
-                null,
-                null,
-                null,
-                null);
-        MovimentacaoDeProduto m3 =new MovimentacaoDeProduto(i3,
-                quantidade3,
-                LocalDateTime.now(),
-                "consumido_materia_prima",
-                null,
-                null,
-                null,
-                null);
+//        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente1);
+//        Produto i1 = produtos.get(0);
+//        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente2);
+//        Produto i2 = produtos.get(0);
+//        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente3);
+//        Produto i3 = produtos.get(0);
+//
+//        //registra a retirada dos ingredientes do estoque
+//        MovimentacaoDeProduto m1 = new MovimentacaoDeProduto(i1,
+//                quantidade1,
+//                LocalDateTime.now(),
+//                "consumido_materia_prima",
+//                null,
+//                null,
+//                null,
+//                null);
+//        MovimentacaoDeProduto m2 =new MovimentacaoDeProduto(i2,
+//                quantidade2,
+//                LocalDateTime.now(),
+//                "consumido_materia_prima",
+//                null,
+//                null,
+//                null,
+//                null);
+//        MovimentacaoDeProduto m3 =new MovimentacaoDeProduto(i3,
+//                quantidade3,
+//                LocalDateTime.now(),
+//                "consumido_materia_prima",
+//                null,
+//                null,
+//                null,
+//                null);
 
         //registra a entrada dos pães em estoque
         MovimentacaoDeProduto m4 = new MovimentacaoDeProduto(pao,qtdePaes,
@@ -468,63 +485,82 @@ public class TalentsTechBankApplication implements CommandLineRunner {
         BigDecimal quantidade5 = valueOf(1);
         BigDecimal qtdeBolos = valueOf(3); /////rende 3 bolos*****
 
+        /*quantidade de ingredientes*/
+        int q=3;
+
+for(j=0,j<q,j++){
+    List<Produto> produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente(j+1));               //busca ingredente em produtos
+    Produto ("i"+j") = produtos.get(j);
+                  MovimentacaoDeProduto m(j+1) = new MovimentacaoDeProduto(i+(j+1),        //registra a retirada dos ingrediente do estoque
+                    quantidade+(j+1),
+                    LocalDateTime.now(),
+                    "consumido_materia_prima",
+                    null,
+                    null,
+                    null,
+                    null);
+}
 
         //busca ingredentes em produtos
 
         List<Produto> produtos = produtoRepository.listarProdutosPorDescricaoOuCod("bolo");
         Produto bolo = produtos.get(0);
-        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente1);
-        Produto i1 = produtos.get(0);
-        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente2);
-        Produto i2 = produtos.get(0);
-        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente3);
-        Produto i3 = produtos.get(0);
-        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente4);
-        Produto i4 = produtos.get(0);
-        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente5);
-        Produto i5 = produtos.get(0);
 
-        //registra a retirada dos ingredientes do estoque
-        MovimentacaoDeProduto m1 = new MovimentacaoDeProduto(i1,
-                quantidade1,
-                LocalDateTime.now(),
-                "consumido_materia_prima",
-                null,
-                null,
-                null,
-                null);
-        MovimentacaoDeProduto m2 =new MovimentacaoDeProduto(i2,
-                quantidade2,
-                LocalDateTime.now(),
-                "consumido_materia_prima",
-                null,
-                null,
-                null,
-                null);
-        MovimentacaoDeProduto m3 =new MovimentacaoDeProduto(i3,
-                quantidade3,
-                LocalDateTime.now(),
-                "consumido_materia_prima",
-                null,
-                null,
-                null,
-                null);
-        MovimentacaoDeProduto m4 =new MovimentacaoDeProduto(i4,
-                quantidade4,
-                LocalDateTime.now(),
-                "consumido_materia_prima",
-                null,
-                null,
-                null,
-                null);
-        MovimentacaoDeProduto m5 = new MovimentacaoDeProduto(i5,
-                quantidade5,
-                LocalDateTime.now(),
-                "consumido_materia_prima",
-                null,
-                null,
-                null,
-                null);
+//        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente1);
+//        Produto i1 = produtos.get(0);
+//        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente2);
+//        Produto i2 = produtos.get(0);
+//        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente3);
+//        Produto i3 = produtos.get(0);
+//        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente4);
+//        Produto i4 = produtos.get(0);
+//        produtos = produtoRepository.listarProdutosPorDescricaoOuCod(ingrediente5);
+//        Produto i5 = produtos.get(0);
+//
+//
+//
+//
+//        //registra a retirada dos ingredientes do estoque
+//        MovimentacaoDeProduto m1 = new MovimentacaoDeProduto(i1,
+//                quantidade1,
+//                LocalDateTime.now(),
+//                "consumido_materia_prima",
+//                null,
+//                null,
+//                null,
+//                null);
+//        MovimentacaoDeProduto m2 =new MovimentacaoDeProduto(i2,
+//                quantidade2,
+//                LocalDateTime.now(),
+//                "consumido_materia_prima",
+//                null,
+//                null,
+//                null,
+//                null);
+//        MovimentacaoDeProduto m3 =new MovimentacaoDeProduto(i3,
+//                quantidade3,
+//                LocalDateTime.now(),
+//                "consumido_materia_prima",
+//                null,
+//                null,
+//                null,
+//                null);
+//        MovimentacaoDeProduto m4 =new MovimentacaoDeProduto(i4,
+//                quantidade4,
+//                LocalDateTime.now(),
+//                "consumido_materia_prima",
+//                null,
+//                null,
+//                null,
+//                null);
+//        MovimentacaoDeProduto m5 = new MovimentacaoDeProduto(i5,
+//                quantidade5,
+//                LocalDateTime.now(),
+//                "consumido_materia_prima",
+//                null,
+//                null,
+//                null,
+//                null);
 
 
         //registra a entrada dos bolos em estoque
